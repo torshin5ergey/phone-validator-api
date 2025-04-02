@@ -1,4 +1,4 @@
-# phone-validator-api
+# Phone Validator API
 
 ## References
 
