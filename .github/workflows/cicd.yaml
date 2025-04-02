@@ -1,0 +1,34 @@
+name: CI/CD pipeline
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+  permissions:
+    contetn: read
+    id-token: write
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install pytest
+        run: pip3 install pytest
+
+      - name: Run tests
+        run: pytest --cov=app --cov-report=html
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: htmlcov/
