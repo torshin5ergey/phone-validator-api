@@ -22,7 +22,7 @@ app = Flask(__name__)
 def ping():
     return "pong", 200
 
-@app.route("/shutdown", methods=["POST"])
+@app.route("/shutdown", methods=["GET"])
 def shutdown():
     def kill_with_delay():
         time.sleep(1) # time to return respons

@@ -31,11 +31,11 @@ def test_nonexists(client):
 def test_shutdown(client):
     # замена реального os.kill на мок объект
     with patch("os.kill") as mock_kill:
-        response = client.post("/shutdown")
+        response = client.get("/shutdown")
 
         assert response.status_code == 200
         assert response.data.decode("utf-8") == "Shutting down..."
         assert "text/html" in response.content_type
         time.sleep(1.5)
         # assert_called_once_with функция вызвана один раз с аргементами
-        mock_kill.assert_called_once_with(os.getpid(), signal.SIGKILL)
+        mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
