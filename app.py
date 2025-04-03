@@ -25,10 +25,12 @@ def ping():
 @app.route("/shutdown", methods=["POST"])
 def shutdown():
     def kill_with_delay():
-        time.sleep(1)
-        os.kill(os.getpid(), signal.SIGKILL)
+        time.sleep(1) # time to return respons
+        # getpid() get parent process (bash) pid
+        os.kill(os.getpid(), signal.SIGTERM) # SIGTERM to parent process (bash)
 
-    threading.Thread(target=kill_with_delay).start()
+    # daemon=true thread run as a daemon, stop when the main thread stops
+    threading.Thread(target=kill_with_delay, daemon=True).start()
 
     return "Shutting down...", 200
 

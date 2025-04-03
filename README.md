@@ -22,6 +22,17 @@ curl localhost:7777
 hello world
 ```
 
+## Run with Docker
+
+- Create image
+```bash
+docker build -t phone-validator-api .
+```
+- Run container
+```bash
+docker run -p 7777:7777 -d phone-validator-api
+```
+
 ## Tests
 
 Run tests

@@ -12,4 +12,8 @@ RUN pip install -r requirements.txt
 
 COPY app.py .
 
-CMD [ "python", "app.py" ]
+# Run main process with bash
+# python app.py & run in the background
+# wait $! to wait for the background process to complete
+# If this process stops, then the container will stop
+CMD ["bash", "-c", "python app.py & wait $!"]
