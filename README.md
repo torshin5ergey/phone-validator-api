@@ -22,6 +22,12 @@ curl localhost:7777/ping
 
 # shutdown
 curl localhost:7777/shutdown
+
+# validatePhoneNumber
+# valid phone
+curl -X POST -d "+7 982 123 4567" http://localhost:7777/validatePhoneNumber
+# invalid phone
+curl -X POST -d "12345" http://localhost:7777/validatePhoneNumber
 ```
 
 ## Run with Docker
@@ -41,6 +47,12 @@ curl localhost:7777/ping
 
 # shutdown
 curl localhost:7777/shutdown
+
+# validatePhoneNumber
+# valid phone
+curl -X POST -d "+7 982 123 4567" http://localhost:7777/validatePhoneNumber
+# invalid phone
+curl -X POST -d "12345" http://localhost:7777/validatePhoneNumber
 ```
 
 ## Tests
