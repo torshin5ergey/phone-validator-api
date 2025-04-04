@@ -15,22 +15,32 @@ pip install -r requirements
 ```bash
 python3 app.py
 ```
-3. Use app (example)
+3. Use app
 ```bash
-curl localhost:7777
-# return
-hello world
+# ping
+curl localhost:7777/ping
+
+# shutdown
+curl localhost:7777/shutdown
 ```
 
 ## Run with Docker
 
-- Create image
+1. Create image
 ```bash
 docker build -t phone-validator-api .
 ```
-- Run container
+2. Run container
 ```bash
 docker run -p 7777:7777 -d phone-validator-api
+```
+3. Use app
+```bash
+# ping
+curl localhost:7777/ping
+
+# shutdown
+curl localhost:7777/shutdown
 ```
 
 ## Tests
