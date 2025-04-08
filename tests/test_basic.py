@@ -2,6 +2,7 @@
 import os
 import signal
 import time
+import json
 
 from unittest.mock import patch
 import pytest
@@ -39,3 +40,16 @@ def test_shutdown(client):
         time.sleep(1.5)
         # assert_called_once_with функция вызвана один раз с аргементами
         mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
+
+def test_validate_phone_number_success(client):
+    phones = "+7 (912) 783 2348"
+    response = client.post(
+        "/validatePhoneNumber",
+        data=phones,
+        content_type="text/plain"
+    )
+
+    assert response.status_code == 200
+    response_data = json.loads(response.get_data(as_text=True))
+    assert response_data.get("status") is True
+    assert response_data.get("normalized") == "+7-912-783-2348"
