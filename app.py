@@ -20,11 +20,11 @@ log = logging.getLogger()
 class PhoneValidator:
     CODES = [982, 986, 912, 934]
     REGEXES = [
-        re.compile(r"^\+7 (?P<code>\d{3}) \d{3} \d{4}"), # +7 code ### ####
-        re.compile(r"^\+7 \((?P<code>\d{3})\) \d{3} \d{4}"), # +7 (code) ### ####
-        re.compile(r"^\+7(?P<code>\d{3})\d{7}\/(?P=code)"), # +7code#######/code>
-        re.compile(r"^8\((?P<code>\d{3})\)\d{3}-\d{4}"), # 8(code)###-####
-        re.compile(r"^8(?P<code>\d{3})\d{7}") # 8code#######
+        re.compile(r"^\+7 (?P<code>\d{3}) (\d{3}) (\d{4})"), # +7 code ### ####
+        re.compile(r"^\+7 \((?P<code>\d{3})\) (\d{3}) (\d{4})"), # +7 (code) ### ####
+        re.compile(r"^\+7(?P<code>\d{3})(\d{3})(\d{4})\/(?P=code)"), # +7code#######/code>
+        re.compile(r"^8\((?P<code>\d{3})\)(\d{3})-(\d{4})"), # 8(code)###-####
+        re.compile(r"^8(?P<code>\d{3})(\d{3})(\d{4})") # 8code#######
     ]
 
     def __init__(self, raw):
@@ -38,11 +38,16 @@ class PhoneValidator:
         return None
 
     def validate(self):
+        """
+        Returns:
+        Нормализованное значение вида +7-###-###-####, где # - цифра
+        example: "+7-912-123-4567"
+        """
         mo = self.match()
         if not mo:
             return "Not found", 404
-        print(mo)
-        return "Success", 200
+        normalized = f"+7-{mo.group('code')}-{mo.group(2)}-{mo.group(3)}"
+        return normalized, 200
 
 
 app = Flask(__name__)
