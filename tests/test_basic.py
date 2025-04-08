@@ -3,6 +3,7 @@ import os
 import signal
 import time
 import json
+import random
 
 from unittest.mock import patch
 import pytest
@@ -42,17 +43,23 @@ def test_shutdown(client):
         mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
 
 def test_validate_phone_number_success(client):
-    phones = "+7 (912) 783 2348"
+    CODES = [982, 986, 912, 934]
+    # Generate phone
+    code = str(random.choice(CODES))
+    mid = str(random.randint(0, 999))
+    last = str(random.randint(0, 9999))
+    phone = f"+7 ({code}) {mid.rjust(3, '0')} {last.rjust(4, '0')}"
+    normalized_phone = f"+7-{code}-{mid.rjust(3, '0')}-{last.rjust(4, '0')}"
     response = client.post(
         "/validatePhoneNumber",
-        data=phones,
+        data=phone,
         content_type="text/plain"
     )
 
     assert response.status_code == 200
     response_data = json.loads(response.get_data(as_text=True))
     assert response_data.get("status") is True
-    assert response_data.get("normalized") == "+7-912-783-2348"
+    assert response_data.get("normalized") == normalized_phone
 
 def test_validate_phone_number_fail(client):
     phones = "+7 (912) 783 238"
