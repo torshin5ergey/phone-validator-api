@@ -54,7 +54,7 @@ def ping():
 @app.route("/shutdown", methods=["GET"])
 def shutdown():
     def kill_with_delay():
-        time.sleep(1) # time to return respons
+        time.sleep(1) # time to return response
         # getpid() get parent process (bash) pid
         os.kill(os.getpid(), signal.SIGTERM) # SIGTERM to parent process (bash)
 
