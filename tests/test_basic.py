@@ -7,6 +7,7 @@ import random
 
 from unittest.mock import patch
 import pytest
+from faker import Faker
 
 from app import app
 
@@ -43,8 +44,8 @@ def test_shutdown(client):
         mock_kill.assert_called_once_with(os.getpid(), signal.SIGTERM)
 
 def test_validate_phone_number_success(client):
-    CODES = [982, 986, 912, 934]
     # Generate phone
+    CODES = [982, 986, 912, 934]
     code = str(random.choice(CODES))
     mid = str(random.randint(0, 999))
     last = str(random.randint(0, 9999))
@@ -55,26 +56,28 @@ def test_validate_phone_number_success(client):
         f"8({code}){mid.rjust(3, '0')}-{last.rjust(4, '0')}",
         f"8{code}{mid.rjust(3, '0')}{last.rjust(4, '0')}"
     )
-    print(TEMPLATES)
     NORMALIZED = f"+7-{code}-{mid.rjust(3, '0')}-{last.rjust(4, '0')}"
-    print(NORMALIZED)
+
+    # Test set
     for template in TEMPLATES:
         response = client.post(
             "/validatePhoneNumber",
             data=template,
             content_type="text/plain"
         )
-
         assert response.status_code == 200
         response_data = json.loads(response.get_data(as_text=True))
         assert response_data.get("status") is True
         assert response_data.get("normalized") == NORMALIZED
 
 def test_validate_phone_number_fail(client):
-    phones = "+7 (912) 783 238"
+    # Generate phone
+    fake = Faker("ru_RU")
+    phone = fake.phone_number()
+
     response = client.post(
         "/validatePhoneNumber",
-        data=phones,
+        data=phone,
         content_type="text/plain"
     )
 
