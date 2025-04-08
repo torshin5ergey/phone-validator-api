@@ -6,6 +6,7 @@ import logging
 import time
 import re
 import json
+from http import HTTPStatus
 
 from flask import Flask, request
 
@@ -29,7 +30,7 @@ class PhoneValidator:
     ]
 
     def __init__(self, raw):
-        self.raw = raw
+        self.raw = raw.strip()
 
     def match(self):
         for regex in self.REGEXES:
@@ -49,23 +50,25 @@ class PhoneValidator:
             response = {
                 "status": False,
             }
-            return json.dumps(response, indent=4), 404
+            return json.dumps(response, indent=4), HTTPStatus.NOT_FOUND.value
         normalized = f"+7-{mo.group('code')}-{mo.group(2)}-{mo.group(3)}"
         response = {
             "status": True,
             "normalized": normalized
         }
-        return json.dumps(response, indent=4), 200
+        return json.dumps(response, indent=4), HTTPStatus.OK.value
 
 
 app = Flask(__name__)
 
 @app.route("/ping", methods=["GET"])
 def ping():
-    return "pong", 200
+    """Healthcheck"""
+    return "pong", HTTPStatus.OK.value
 
 @app.route("/shutdown", methods=["GET"])
 def shutdown():
+    """Shutdown"""
     def kill_with_delay():
         time.sleep(1) # time to return response
         # getpid() get parent process (bash) pid
@@ -74,10 +77,11 @@ def shutdown():
     # daemon=true thread run as a daemon, stop when the main thread stops
     threading.Thread(target=kill_with_delay, daemon=True).start()
 
-    return "Shutting down...", 200
+    return "Shutting down...", HTTPStatus.OK.value
 
 @app.route("/validatePhoneNumber", methods=["POST"])
 def validate_phone_number():
+    """API для валидации телефонных номеров"""
     request_body = request.get_data(as_text=True)
 
     validator = PhoneValidator(request_body)
