@@ -5,6 +5,7 @@ import threading
 import logging
 import time
 import re
+import json
 
 from flask import Flask, request
 
@@ -45,9 +46,16 @@ class PhoneValidator:
         """
         mo = self.match()
         if not mo:
-            return "Not found", 404
+            response = {
+                "status": False,
+            }
+            return json.dumps(response, indent=4)
         normalized = f"+7-{mo.group('code')}-{mo.group(2)}-{mo.group(3)}"
-        return normalized, 200
+        response = {
+            "status": True,
+            "normalized": normalized
+        }
+        return json.dumps(response, indent=4), 200
 
 
 app = Flask(__name__)
