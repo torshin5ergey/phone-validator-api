@@ -49,7 +49,7 @@ class PhoneValidator:
             response = {
                 "status": False,
             }
-            return json.dumps(response, indent=4)
+            return json.dumps(response, indent=4), 404
         normalized = f"+7-{mo.group('code')}-{mo.group(2)}-{mo.group(3)}"
         response = {
             "status": True,
