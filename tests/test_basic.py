@@ -48,18 +48,27 @@ def test_validate_phone_number_success(client):
     code = str(random.choice(CODES))
     mid = str(random.randint(0, 999))
     last = str(random.randint(0, 9999))
-    phone = f"+7 ({code}) {mid.rjust(3, '0')} {last.rjust(4, '0')}"
-    normalized_phone = f"+7-{code}-{mid.rjust(3, '0')}-{last.rjust(4, '0')}"
-    response = client.post(
-        "/validatePhoneNumber",
-        data=phone,
-        content_type="text/plain"
+    TEMPLATES = (
+        f"+7 {code} {mid.rjust(3, '0')} {last.rjust(4, '0')}",
+        f"+7 ({code}) {mid.rjust(3, '0')} {last.rjust(4, '0')}",
+        f"+7{code}{mid.rjust(3, '0')}{last.rjust(4, '0')}",
+        f"8({code}){mid.rjust(3, '0')}-{last.rjust(4, '0')}",
+        f"8{code}{mid.rjust(3, '0')}{last.rjust(4, '0')}"
     )
+    print(TEMPLATES)
+    NORMALIZED = f"+7-{code}-{mid.rjust(3, '0')}-{last.rjust(4, '0')}"
+    print(NORMALIZED)
+    for template in TEMPLATES:
+        response = client.post(
+            "/validatePhoneNumber",
+            data=template,
+            content_type="text/plain"
+        )
 
-    assert response.status_code == 200
-    response_data = json.loads(response.get_data(as_text=True))
-    assert response_data.get("status") is True
-    assert response_data.get("normalized") == normalized_phone
+        assert response.status_code == 200
+        response_data = json.loads(response.get_data(as_text=True))
+        assert response_data.get("status") is True
+        assert response_data.get("normalized") == NORMALIZED
 
 def test_validate_phone_number_fail(client):
     phones = "+7 (912) 783 238"
