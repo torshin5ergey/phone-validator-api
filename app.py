@@ -23,7 +23,7 @@ class PhoneValidator:
     REGEXES = [
         re.compile(r"^\+7 (?P<code>\d{3}) (\d{3}) (\d{4})"), # +7 code ### ####
         re.compile(r"^\+7 \((?P<code>\d{3})\) (\d{3}) (\d{4})"), # +7 (code) ### ####
-        re.compile(r"^\+7(?P<code>\d{3})(\d{3})(\d{4})\/(?P=code)"), # +7code#######/code>
+        re.compile(r"^\+7(?P<code>\d{3})(\d{3})(\d{4})"), # +7code#######/code>
         re.compile(r"^8\((?P<code>\d{3})\)(\d{3})-(\d{4})"), # 8(code)###-####
         re.compile(r"^8(?P<code>\d{3})(\d{3})(\d{4})") # 8code#######
     ]
