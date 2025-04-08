@@ -53,3 +53,15 @@ def test_validate_phone_number_success(client):
     response_data = json.loads(response.get_data(as_text=True))
     assert response_data.get("status") is True
     assert response_data.get("normalized") == "+7-912-783-2348"
+
+def test_validate_phone_number_fail(client):
+    phones = "+7 (912) 783 238"
+    response = client.post(
+        "/validatePhoneNumber",
+        data=phones,
+        content_type="text/plain"
+    )
+
+    assert response.status_code == 404
+    response_data = json.loads(response.get_data(as_text=True))
+    assert response_data.get("status") is False
