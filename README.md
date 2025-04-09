@@ -1,16 +1,22 @@
-# Phone Validator API
+# Validate Phone Number API
+
+[![Docker Image Version](https://img.shields.io/docker/v/torshin5ergey/validate-phone-number-api)](https://hub.docker.com/r/torshin5ergey/validate-phone-number-api)
+[![CI](https://github.com/torshin5ergey/validate-phone-number-api/actions/workflows/cicd.yaml/badge.svg)](https://github.com/torshin5ergey/validate-phone-number-api/actions)
+
+Phone number validation api inspired by [Yandex Backend Developers Championship Qualification 2019 Challenge G](https://yandex.ru/cup/backend/analysis)
 
 ## References
 
-- [Задачи квалификации чемпионата по програм­мированию 2019 среди бэкенд-разработчиков. G Сервис валидации телефонных номеров](https://yandex.ru/cup/backend/analysis#)
+- [Задачи квалификации чемпионата по програм­мированию 2019 среди бэкенд-разработчиков](https://yandex.ru/cup/backend/analysis)
 - [Quickstart — Flask Documentation (3.1.x)](https://flask.palletsprojects.com/en/stable/quickstart/)
 - [Faker Documentation](https://faker.readthedocs.io/en/stable/index.html#)
+- [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status#client_error_responses)
 
 ## Run with Python
 
 1. Install requirements
 ```bash
-pip install -r requirements
+pip install -r requirements.txt
 ```
 2. Run app
 ```bash
@@ -23,14 +29,23 @@ python3 app.py
 ```bash
 docker build -t validate-phone-number-api .
 ```
-2. Run container
+2. Run container (build locally or pull from Docker Hub)
 ```bash
+# Local Build
 docker run -p 7777:7777 -d --rm validate-phone-number-api
+
+# Pull from Docker Hub
+docker run -p 7777:7777 -d --rm torshin5ergey/validate-phone-number-api
 ```
 
 ## Usage
 
-When run in container
+Available endpoints:
+- `GET /ping` - healthcheck
+- `POST /validatePhoneNumber` - phone number validation
+- `GET /shutdown` - stop service
+
+### Examples
 
 - Ping
 ```bash
@@ -42,7 +57,7 @@ curl localhost:7777/ping
 curl localhost:7777/shutdown
 ```
 
-- Validate phone number
+- Valid phone number
 ```bash
 curl -X POST http://localhost:7777/validatePhoneNumber \
 -H "Content-Type: application/json" \
@@ -73,7 +88,11 @@ Response code: 400
 
 ## Tests
 
-Run tests
+1. Install test dependencies
+```bash
+pip install -r requirements-dev.txt
+```
+2. Run tests
 ```bash
 # simple run
 pytest -v
