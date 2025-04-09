@@ -2,10 +2,11 @@
 
 ## References
 
-- [Quickstart — Flask Documentation (3.1.x)](https://flask.palletsprojects.com/en/stable/quickstart/)
 - [Задачи квалификации чемпионата по програм­мированию 2019 среди бэкенд-разработчиков. G Сервис валидации телефонных номеров](https://yandex.ru/cup/backend/analysis#)
+- [Quickstart — Flask Documentation (3.1.x)](https://flask.palletsprojects.com/en/stable/quickstart/)
+- [Faker Documentation](https://faker.readthedocs.io/en/stable/index.html#)
 
-## App
+## Run with Python
 
 1. Install requirements
 ```bash
@@ -15,44 +16,59 @@ pip install -r requirements
 ```bash
 python3 app.py
 ```
-3. Use app
-```bash
-# ping
-curl localhost:7777/ping
-
-# shutdown
-curl localhost:7777/shutdown
-
-# validatePhoneNumber
-# valid phone
-curl -X POST -d "+7 982 123 4567" http://localhost:7777/validatePhoneNumber
-# invalid phone
-curl -X POST -d "12345" http://localhost:7777/validatePhoneNumber
-```
 
 ## Run with Docker
 
 1. Create image
 ```bash
-docker build -t phone-validator-api .
+docker build -t validate-phone-number-api .
 ```
 2. Run container
 ```bash
-docker run -p 7777:7777 -d phone-validator-api
+docker run -p 7777:7777 -d --rm validate-phone-number-api
 ```
-3. Use app
+
+## Usage
+
+When run in container
+
+- Ping
 ```bash
-# ping
 curl localhost:7777/ping
+```
 
-# shutdown
+- Shutdown
+```bash
 curl localhost:7777/shutdown
+```
 
-# validatePhoneNumber
-# valid phone
-curl -X POST -d "+7 982 123 4567" http://localhost:7777/validatePhoneNumber
-# invalid phone
-curl -X POST -d "12345" http://localhost:7777/validatePhoneNumber
+- Validate phone number
+```bash
+curl -X POST http://localhost:7777/validatePhoneNumber \
+-H "Content-Type: application/json" \
+-d '{"phone_number": "+7 912 123 4567"}'
+# output
+{"normalized":"+7-912-123-4567","status":true}
+```
+
+- Invalid phone
+```bash
+curl -X POST http://localhost:7777/validatePhoneNumber \
+-H "Content-Type: application/json" \
+-d '{"phone_number": "+7 913 123 4567"}' \
+-w "Response code: %{http_code}\n"
+# output
+Response code: 404
+```
+
+- Invalid request
+```bash
+curl -X POST http://localhost:7777/validatePhoneNumber \
+-H "Content-Type: application/json" \
+-d '{"phone": "+7 912 123 4567"}' \
+-w "Response code: %{http_code}\n"
+# output
+Response code: 400
 ```
 
 ## Tests
