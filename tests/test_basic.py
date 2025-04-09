@@ -4,6 +4,7 @@ import signal
 import time
 import json
 import random
+from http import HTTPStatus
 
 from unittest.mock import patch
 import pytest
@@ -22,21 +23,21 @@ def test_ping(client):
     # GET to url "/"
     response = client.get("/ping")
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK.value
     assert response.data.decode("utf-8") == "pong"
     assert "text/html" in response.content_type
 
 def test_nonexists(client):
-    response = client.get("/nonexists")
+    response = client.get("/validatephonenumber")
 
-    assert response.status_code == 404
+    assert response.status_code == HTTPStatus.NOT_FOUND.value
 
 def test_shutdown(client):
     # замена реального os.kill на мок объект
     with patch("os.kill") as mock_kill:
         response = client.get("/shutdown")
 
-        assert response.status_code == 200
+        assert response.status_code == HTTPStatus.OK.value
         assert response.data.decode("utf-8") == "Shutting down..."
         assert "text/html" in response.content_type
         time.sleep(1.5)
@@ -62,25 +63,38 @@ def test_validate_phone_number_success(client):
     for template in TEMPLATES:
         response = client.post(
             "/validatePhoneNumber",
-            data=template,
-            content_type="text/plain"
+            json={"phone_number": template},
+            content_type="application/json"
         )
-        assert response.status_code == 200
-        response_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == HTTPStatus.OK.value
+        response_data = response.get_json()
         assert response_data.get("status") is True
         assert response_data.get("normalized") == NORMALIZED
 
-def test_validate_phone_number_fail(client):
+def test_validate_phone_number_br(client):
+    """400 Bad Request"""
     # Generate phone
     fake = Faker("ru_RU")
     phone = fake.phone_number()
 
     response = client.post(
         "/validatePhoneNumber",
-        data=phone,
-        content_type="text/plain"
+        json={"phone": phone},
+        content_type="application/json"
     )
 
-    assert response.status_code == 404
-    response_data = json.loads(response.get_data(as_text=True))
-    assert response_data.get("status") is False
+    assert response.status_code == HTTPStatus.BAD_REQUEST.value
+
+def test_validate_phone_number_nf(client):
+    """404 Not Found"""
+    # Generate phone
+    fake = Faker("ru_RU")
+    phone = fake.phone_number()
+
+    response = client.post(
+        "/validatePhoneNumber",
+        json={"phone_number": phone},
+        content_type="application/json"
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND.value
