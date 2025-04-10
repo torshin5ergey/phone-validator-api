@@ -9,7 +9,6 @@ permissions:
   id-token: write
 
 env:
-  DOCKER_REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/validate-phone-number-api
 
 jobs:
