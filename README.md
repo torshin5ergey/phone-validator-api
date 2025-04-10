@@ -3,7 +3,7 @@
 [![Docker Image Version](https://img.shields.io/docker/v/torshin5ergey/validate-phone-number-api)](https://hub.docker.com/r/torshin5ergey/validate-phone-number-api)
 [![CI](https://github.com/torshin5ergey/validate-phone-number-api/actions/workflows/cicd.yaml/badge.svg)](https://github.com/torshin5ergey/validate-phone-number-api/actions)
 
-Phone number validation api inspired by [Yandex Backend Developers Championship Qualification 2019 Challenge G](https://yandex.ru/cup/backend/analysis)
+Phone number validation API inspired by [Yandex Backend Developers Championship Qualification 2019 Challenge G](https://yandex.ru/cup/backend/analysis)
 
 ## References
 
